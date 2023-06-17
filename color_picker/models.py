@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
+class Color(models.Model):
+    question_text = models.CharField(max_length=25)
+    modified_date = models.DateTimeField("last modified date")
