@@ -1,0 +1,10 @@
+{% extends "color_picker/base.html" %}
+{% block content %}
+  <h2>Profile</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <label for="color">Color:</label><br>
+    <input type="text" id="color" name="color" value="{{ profile.color }}"><br>
+    <input type="submit" value="Update">
+  </form>
+{% endblock %}
