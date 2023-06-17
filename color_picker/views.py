@@ -4,6 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import UserRegisterForm
 from django.http import HttpResponse
+from django.utils import timezone
+from .forms import UserRegisterForm
+from django.contrib.auth import login
+from .models import Profile
 
 
 def index(request):
@@ -14,12 +18,17 @@ def register(request):
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get("username")
-            messages.success(
-                request, f"Account created for {username}! You can now log in"
+            user = User.objects.create_user(
+                form.cleaned_data["username"],
+                password=form.cleaned_data["password1"],
             )
-            return redirect("login")
+            user.last_login = timezone.now()  # set last_login to current time
+            user.save()
+            profile = Profile(user=user, color="")
+            profile.save()
+
+            login(request, user)
+            return redirect("profile")
     else:
         form = UserRegisterForm()
     return render(request, "color_picker/register.html", {"form": form})
