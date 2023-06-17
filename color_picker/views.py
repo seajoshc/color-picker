@@ -11,7 +11,7 @@ from .models import Profile
 
 
 def index(request):
-    return HttpResponse("Color Picker")
+    return render(request, "color_picker/base.html")
 
 
 def register(request):
@@ -22,10 +22,9 @@ def register(request):
                 form.cleaned_data["username"],
                 password=form.cleaned_data["password1"],
             )
-            user.last_login = timezone.now()  # set last_login to current time
+            user.last_login = timezone.now()
+            user.profile.color = form.cleaned_data["color"]
             user.save()
-            profile = Profile(user=user, color="")
-            profile.save()
 
             login(request, user)
             return redirect("profile")
@@ -40,13 +39,14 @@ def profile(request):
         color = request.POST.get("color")
         request.user.profile.color = color
         request.user.profile.save()
-        messages.success(request, f"Your profile has been updated!")
+        messages.success(request, f"Your color has been updated. Have a great day!")
         return redirect("profile")
     return render(
         request, "color_picker/profile.html", {"profile": request.user.profile}
     )
 
 
+@login_required
 def user_profile(request, username):
     user = get_object_or_404(User, username=username)
     return render(request, "color_picker/user_profile.html", {"profile": user.profile})
