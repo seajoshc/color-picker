@@ -18,6 +18,6 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("color_picker/", include("color_picker.urls")),
-    path('admin/', admin.site.urls),
+    path("", include("color_picker.urls")),
+    path("admin/", admin.site.urls),
 ]
